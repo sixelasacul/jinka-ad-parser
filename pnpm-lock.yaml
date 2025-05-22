@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      haversine-distance:
+        specifier: ^1.2.3
+        version: 1.2.3
       ofetch:
         specifier: ^1.4.1
         version: 1.4.1
@@ -31,8 +34,8 @@ importers:
         specifier: ~3.0.7
         version: 3.0.9(@types/node@22.15.21)
       wrangler:
-        specifier: ^4.16.0
-        version: 4.16.0
+        specifier: ^4.16.1
+        version: 4.16.1
 
 packages:
 
@@ -716,6 +719,9 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
+  haversine-distance@1.2.3:
+    resolution: {integrity: sha512-cRKtuukt+/fVprlLueX30mytMNtiQ4tff93FDW9yrBx3BYrq6gujiw1+hEaaxssKlOZTm8R3BPtMbNM+n0+bqQ==}
+
   humanize-ms@1.2.1:
     resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
 
@@ -1006,6 +1012,16 @@ packages:
 
   wrangler@4.16.0:
     resolution: {integrity: sha512-zQojiBJKAWRVG4WdUgTP5/i9N5UcwOixhWljnBrcKxJd+kpqUXVV/L03ytO+0cnr5IhgYUs7qhjd8EWU6UwPfg==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    peerDependencies:
+      '@cloudflare/workers-types': ^4.20250508.0
+    peerDependenciesMeta:
+      '@cloudflare/workers-types':
+        optional: true
+
+  wrangler@4.16.1:
+    resolution: {integrity: sha512-YiLdWXcaQva2K/bqokpsZbySPmoT8TJFyJPsQPZumnkgimM9+/g/yoXArByA+pf+xU8jhw7ybQ8X1yBGXv731g==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -1574,6 +1590,8 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
+  haversine-distance@1.2.3: {}
+
   humanize-ms@1.2.1:
     dependencies:
       ms: 2.1.3
@@ -1878,6 +1896,23 @@ snapshots:
       '@cloudflare/workerd-windows-64': 1.20250508.0
 
   wrangler@4.16.0:
+    dependencies:
+      '@cloudflare/kv-asset-handler': 0.4.0
+      '@cloudflare/unenv-preset': 2.3.2(unenv@2.0.0-rc.17)(workerd@1.20250508.0)
+      blake3-wasm: 2.1.5
+      esbuild: 0.25.4
+      miniflare: 4.20250508.3
+      path-to-regexp: 6.3.0
+      unenv: 2.0.0-rc.17
+      workerd: 1.20250508.0
+    optionalDependencies:
+      fsevents: 2.3.3
+      sharp: 0.33.5
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  wrangler@4.16.1:
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
       '@cloudflare/unenv-preset': 2.3.2(unenv@2.0.0-rc.17)(workerd@1.20250508.0)

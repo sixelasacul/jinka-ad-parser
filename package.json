@@ -8,9 +8,11 @@
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
 		"test": "vitest",
-		"cf-typegen": "wrangler types"
+		"cf-typegen": "wrangler types",
+		"clean": "git clean -dfxe .dev.vars"
 	},
 	"dependencies": {
+		"haversine-distance": "^1.2.3",
 		"ofetch": "^1.4.1",
 		"openai": "^4.100.0",
 		"zod": "^3.25.17"
@@ -20,6 +22,6 @@
 		"@types/node": "^22.15.21",
 		"typescript": "^5.5.2",
 		"vitest": "~3.0.7",
-		"wrangler": "^4.16.0"
+		"wrangler": "^4.16.1"
 	}
 }

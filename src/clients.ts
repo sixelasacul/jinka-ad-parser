@@ -18,7 +18,7 @@ export const nearbySearchClient = ofetch.create({
 	headers: {
 		'X-Goog-Api-Key': process.env.NEARBY_SEARCH_KEY,
 		'Content-Type': 'application/json',
-		'X-Goog-FieldMask': 'places.displayName,places.rating,places.userRatingCount,places.types',
+		'X-Goog-FieldMask': 'places.displayName,places.rating,places.userRatingCount,places.types,places.googleMapsUri,places.location',
 	},
 	onResponseError(response) {
 		console.error('Error:', response);
