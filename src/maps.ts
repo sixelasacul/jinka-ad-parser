@@ -17,9 +17,12 @@ type SearchNearbyResponse = {
 	}[];
 };
 
-const IGNORED_GENERIC_TYPES = ['establishment', 'point_of_interest', 'locality', 'restaurant', 'food'];
+const IGNORED_GENERIC_TYPES = ['establishment', 'point_of_interest', 'locality', 'restaurant', 'food', 'store'];
 function ignoreGenericTypes(type: string) {
 	return !IGNORED_GENERIC_TYPES.includes(type);
+}
+function shortenTypes(type: string) {
+	return type.replace(/(_(store|restaurant|station|stop|shop))/gi, '');
 }
 
 async function searchNearby({ lat, lng, types, radius = 500 }: SearchNearbyOptions) {
@@ -38,14 +41,15 @@ async function searchNearby({ lat, lng, types, radius = 500 }: SearchNearbyOptio
 			},
 		},
 	});
+	// could be moved to view?
 	return places.map((place) => {
 		const distance = Math.ceil(haversineDistance({ lat, lng }, place.location));
 		return {
 			name: place.displayName.text,
 			mapsLink: place.googleMapsUri,
-			rating: place.rating && `${place.rating} (${place.userRatingCount})`,
+			rating: place.rating ? `${place.rating} (${place.userRatingCount})` : 'no rating',
 			distance: `${distance} m`,
-			types: place.types.filter(ignoreGenericTypes).join(', '),
+			types: place.types.filter(ignoreGenericTypes).map(shortenTypes).join(', '),
 		};
 	});
 }
@@ -97,6 +101,9 @@ export async function findPointOfInterests({ lat, lng }: LatLng) {
 		commute: unwrap(commute, 'commute'),
 	};
 }
+
+export type Place = Awaited<ReturnType<typeof searchNearby>>[number];
+export type POIs = Awaited<ReturnType<typeof findPointOfInterests>>;
 
 export function getMapsUrl({ lat, lng }: LatLng) {
 	return `https://www.google.com/maps/search/?q=${lat},${lng}`;
