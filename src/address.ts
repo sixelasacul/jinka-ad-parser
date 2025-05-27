@@ -11,6 +11,7 @@ type GeocodeResponse = {
 				lng: number;
 			};
 		};
+		types: string[];
 	}[];
 };
 
@@ -18,7 +19,14 @@ async function searchWithGeocodeApi(address: string) {
 	const { results } = await geocodeClient<GeocodeResponse>('', {
 		query: { address },
 	});
-	return results[0]!.geometry.location;
+
+	// no result or not precise enough (might happen when GPT returns just the
+	// city even though it's asked not to)
+	if (results.length === 0 || results[0].types[0] === 'postal_code') {
+		return null;
+	}
+
+	return results[0].geometry.location;
 }
 
 const addressSchema = z.object({
@@ -59,26 +67,37 @@ async function getAddressFromSource(ad: Ad) {
 }
 
 export async function getAdLatLng(ad: Ad) {
-	if (ad.lat && ad.lng) {
-		return { lat: ad.lat, lng: ad.lng };
+	const { lat, lng, quartier_name, city } = ad;
+	if (lat && lng) {
+		return { lat, lng };
 	}
 
 	const { address, pointOfInterests } = await getAddressFromResponse(ad);
 
 	if (!!address) {
-		return await searchWithGeocodeApi(address);
+		const position = await searchWithGeocodeApi(address);
+		if (position) return position;
 	}
-	if (!!pointOfInterests[0]) {
-		return await searchWithGeocodeApi(pointOfInterests[0]);
+	if (pointOfInterests.length > 0) {
+		const position = await searchWithGeocodeApi(pointOfInterests[0]);
+		if (position) return position;
 	}
+	if (quartier_name && city) {
+		const position = await searchWithGeocodeApi(`${quartier_name}, ${city}`);
+		if (position) return position;
+	}
+
+	// getting 403 because of cors when trying to access the source
 
 	const { address: sourceAddress, pointOfInterests: sourcePointOfInterests } = await getAddressFromSource(ad);
 
 	if (!!sourceAddress) {
-		return await searchWithGeocodeApi(sourceAddress);
+		const position = await searchWithGeocodeApi(sourceAddress);
+		if (position) return position;
 	}
-	if (!!sourcePointOfInterests[0]) {
-		return await searchWithGeocodeApi(sourcePointOfInterests[0]);
+	if (sourcePointOfInterests.length > 0) {
+		const position = await searchWithGeocodeApi(sourcePointOfInterests[0]);
+		if (position) return position;
 	}
 
 	return null;
