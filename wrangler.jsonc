@@ -5,7 +5,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "jinka-ad-parser",
-	"main": "src/index.ts",
+	"main": "src/index.tsx",
 	// to populate process.env, and allow other files to access env vars
 	"compatibility_flags": ["nodejs_compat"],
 	"compatibility_date": "2025-05-21",

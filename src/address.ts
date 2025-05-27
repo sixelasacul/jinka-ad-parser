@@ -15,7 +15,7 @@ type GeocodeResponse = {
 	}[];
 };
 
-async function searchWithGeocodeApi(address: string) {
+export async function searchWithGeocodeApi(address: string) {
 	const { results } = await geocodeClient<GeocodeResponse>('', {
 		query: { address },
 	});
@@ -87,17 +87,21 @@ export async function getAdLatLng(ad: Ad) {
 		if (position) return position;
 	}
 
-	// getting 403 because of cors when trying to access the source
+	try {
+		const { address: sourceAddress, pointOfInterests: sourcePointOfInterests } = await getAddressFromSource(ad);
 
-	const { address: sourceAddress, pointOfInterests: sourcePointOfInterests } = await getAddressFromSource(ad);
-
-	if (!!sourceAddress) {
-		const position = await searchWithGeocodeApi(sourceAddress);
-		if (position) return position;
-	}
-	if (sourcePointOfInterests.length > 0) {
-		const position = await searchWithGeocodeApi(sourcePointOfInterests[0]);
-		if (position) return position;
+		if (!!sourceAddress) {
+			const position = await searchWithGeocodeApi(sourceAddress);
+			if (position) return position;
+		}
+		if (sourcePointOfInterests.length > 0) {
+			const position = await searchWithGeocodeApi(sourcePointOfInterests[0]);
+			if (position) return position;
+		}
+	} catch (e) {
+		// getting 403 because of cors when trying to access the source, but not every time
+		console.error(e);
+		return null;
 	}
 
 	return null;

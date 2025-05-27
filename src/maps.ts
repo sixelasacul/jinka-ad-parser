@@ -64,7 +64,7 @@ function unwrap<T>(promise: PromiseSettledResult<T>, type: string) {
 }
 
 export async function findPointOfInterests({ lat, lng }: LatLng) {
-	const [food, drink, bakery, shop, commute] = await Promise.allSettled([
+	const [food, drink, bakery, shop, commute, skatepark] = await Promise.allSettled([
 		searchNearby({
 			lat: lat,
 			lng: lng,
@@ -91,6 +91,12 @@ export async function findPointOfInterests({ lat, lng }: LatLng) {
 			types: ['subway_station', 'bus_stop'],
 			radius: 1000,
 		}),
+		searchNearby({
+			lat: lat,
+			lng: lng,
+			types: ['skateboard_park'],
+			radius: 2000,
+		}),
 	]);
 
 	return {
@@ -99,6 +105,7 @@ export async function findPointOfInterests({ lat, lng }: LatLng) {
 		bakery: unwrap(bakery, 'bakery'),
 		shop: unwrap(shop, 'shop'),
 		commute: unwrap(commute, 'commute'),
+		skatepark: unwrap(skatepark, 'skatepark'),
 	};
 }
 
