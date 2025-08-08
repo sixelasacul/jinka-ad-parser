@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { getAdLatLng, searchWithGeocodeApi } from './address';
-import { findPointOfInterests, getMapsUrl } from './maps';
+import { findPointOfInterests, getMapsUrl, routeToWork } from './maps';
 import { extractAdIdFromUrl, getJinkaAd } from './jinka';
 import { renderer } from './renderer';
 import { Search } from './views/search';
@@ -42,10 +42,12 @@ app.get('/jinkaAd', async (c) => {
 		return c.render(<Error error="Could not get the address" />);
 	}
 
+	const route = await routeToWork(position);
+
 	const mapsUrl = getMapsUrl(position);
 	const pois = await findPointOfInterests(position);
 
-	return c.render(<Result mapsUrl={mapsUrl} pois={pois} />);
+	return c.render(<Result mapsUrl={mapsUrl} pois={pois} route={route} />);
 });
 
 app.get('/address', async (c) => {
@@ -61,10 +63,12 @@ app.get('/address', async (c) => {
 		return c.render(<Error error="Could not get the address" />);
 	}
 
+	const route = await routeToWork(position);
+
 	const mapsUrl = getMapsUrl(position);
 	const pois = await findPointOfInterests(position);
 
-	return c.render(<Result mapsUrl={mapsUrl} pois={pois} />);
+	return c.render(<Result mapsUrl={mapsUrl} pois={pois} route={route} />);
 });
 
 export default app;
